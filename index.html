@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shyam Dabral - Futuristic Portfolio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@300;400;700&display=swap');
+        
+        :root {
+            --bg-primary: #f7fafc;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --accent-color: #00ff00;
+        }
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: default;
+        }
+        
+        /* Trail and Click Containers */
+        #trail-container, #click-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        .trail-char {
+            position: absolute;
+            color: #00ff00;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            font-size: 18px;
+            opacity: 0.8;
+            transition: all 0.5s ease-out;
+        }
+        
+        .click-char {
+            position: absolute;
+            color: #00ff00;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            font-size: 20px;
+            opacity: 1;
+            transition: all 1s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="trail-container"></div>
+    <div id="click-container"></div>
+
+    <header class="text-center mb-16 bg-opacity-10 p-8">
+        <h1 class="text-6xl font-bold mb-4 professional-header text-gray-800">
+            Shyam Dabral
+        </h1>
+        <p class="text-2xl font-mono text-green-300 mb-2">
+            AI/ML Researcher | Future Innovator
+        </p>
+        <div class="flex justify-center space-x-4 mt-6">
+            <a href="mailto:shyamdabral1@gmail.com" class="text-cyan-300 hover:text-cyan-100 transition-colors">
+                shyamdabral1@gmail.com
+            </a>
+            <a href="tel:9625172523" class="text-cyan-300 hover:text-cyan-100 transition-colors">
+                9625172523
+            </a>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <section class="mb-16">
+            <h2 class="section-title text-3xl mb-8 text-center">About Me</h2>
+            <p class="text-lg text-center text-gray-700 mb-4">
+                Hello, I'm Shyam Dabral, an AI/ML researcher and a passionate innovator focused on creating futuristic solutions that bridge the gap between human and machine interaction. 
+                With years of experience in cutting-edge technologies like Deep Learning, Computer Vision, and NLP, my mission is to push the boundaries of artificial intelligence and create systems that make a meaningful impact.
+            </p>
+            <p class="text-lg text-center text-gray-700">
+                I specialize in designing intelligent systems that not only solve real-world problems but also pave the way for the next wave of AI-driven innovation. In my spare time, I love learning about emerging technologies, reading, and working on projects that challenge my creativity and technical skills.
+            </p>
+        </section>
+    </div>
+
+    <script>
+        const trailContainer = document.getElementById('trail-container');
+        const clickContainer = document.getElementById('click-container');
+        const characters = '01AI'; // Simplified character set
+
+        // Trail effect
+        function createTrailEffect(x, y) {
+            // Limit trail length
+            if (trailContainer.children.length > 10) {
+                trailContainer.removeChild(trailContainer.firstChild);
+            }
+
+            // Create trail character
+            const trailChar = document.createElement('div');
+            trailChar.classList.add('trail-char');
+            trailChar.textContent = characters[Math.floor(Math.random() * characters.length)];
+            trailChar.style.left = `${x + Math.random() * 10 - 5}px`;
+            trailChar.style.top = `${y + Math.random() * 10 - 5}px`;
+            
+            trailContainer.appendChild(trailChar);
+
+            // Fade out effect
+            setTimeout(() => {
+                trailChar.style.opacity = '0';
+                setTimeout(() => {
+                    trailContainer.removeChild(trailChar);
+                }, 500);
+            }, 200);
+        }
+
+        // Click effect
+        function createClickEffect(x, y) {
+            // Clear previous click effects
+            clickContainer.innerHTML = '';
+
+            // Create falling characters
+            for (let i = 0; i < 15; i++) {
+                const clickChar = document.createElement('div');
+                clickChar.classList.add('click-char');
+                clickChar.textContent = characters[Math.floor(Math.random() * characters.length)];
+                
+                // More controlled explosion
+                const angle = Math.random() * Math.PI - Math.PI / 2; // Constrain to upward and downward directions
+                const magnitude = Math.random() * 150 + 50;
+                const vx = Math.cos(angle) * magnitude * (Math.random() > 0.5 ? 1 : -1);
+                const vy = Math.abs(Math.sin(angle)) * magnitude * (Math.random() > 0.5 ? 1 : -1);
+
+                // Initial positioning
+                clickChar.style.left = `${x}px`;
+                clickChar.style.top = `${y}px`;
+                clickChar.style.position = 'absolute';
+
+                clickContainer.appendChild(clickChar);
+
+                // Animate with physics
+                let posX = x;
+                let posY = y;
+                let velocityX = vx;
+                let velocityY = vy;
+                const gravity = 500;
+                let time = 0;
+
+                function animate() {
+                    time += 0.016;
+
+                    // Update position with gravity
+                    posX += velocityX * 0.016;
+                    posY += velocityY * 0.016 + 0.5 * gravity * time * time;
+                    
+                    // Reduce velocity
+                    velocityX *= 0.99;
+                    velocityY *= 0.99;
+
+                    // Update character position
+                    clickChar.style.left = `${posX}px`;
+                    clickChar.style.top = `${posY}px`;
+
+                    // Smooth fall to bottom with fade
+                    if (posY >= window.innerHeight - 100) {
+                        const bottomProgress = (posY - (window.innerHeight - 100)) / 100;
+                        clickChar.style.opacity = 1 - bottomProgress;
+                        
+                        if (bottomProgress >= 1) {
+                            clickContainer.removeChild(clickChar);
+                            return;
+                        }
+                    }
+
+                    // Continue animation
+                    requestAnimationFrame(animate);
+                }
+
+                // Start animation
+                animate();
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('mousemove', (e) => {
+            createTrailEffect(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('click', (e) => {
+            createClickEffect(e.clientX, e.clientY);
+        });
+    </script>
+</body>
+</html>
